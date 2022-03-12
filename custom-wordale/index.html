@@ -1,0 +1,470 @@
+<html>
+
+<head>
+    <title>וורדל׳ה - משחק ב-6 ניחושים</title>
+    <meta name="description" content=" וורדל׳ה - וורדל בעברית. משחק יומי בו יש לכם 6 נסיונות לנחש את המילה Wordaleh - Wordle in Hebrew. A daily word game where you have 6 tries to guess the word">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant&family=Secular+One&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="wordale-favicon-new.png">
+    <meta property="og:image" content="wordale-favicon-new.png">
+    <meta property="twitter:image" content="wordale-favicon-new.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3HYHMGH006"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-3HYHMGH006');
+    </script>
+    <div id="topBar">
+        <style>
+
+            #topBar {
+                margin: auto;
+                display: flex;
+                justify-content: space-evenly;
+                width: clamp(5vw,100vw,320px);
+                height: 50px;
+                font-family: 'Secular One';
+                overflow: hidden;
+                font-size:clamp(0.5vw,5vw,15px);
+
+
+            }
+
+            #topBar div {
+                text-align: center;
+                align-self: center;
+                /* justify-self: center; */
+
+            }
+
+            #topBar button {
+                border: none;
+                background-color: transparent;
+
+
+            
+            }
+            #topBar img{
+                width:clamp(0.5vw,13vw,40px);
+                
+            }
+        </style>
+        <div><button class="rules">
+            <img src="question-mark.svg"  onclick="openInstructions()">
+        </button></div>
+        <div>
+            <h1 class="title">וורדל׳ה</h1>
+        </div>
+        <div>
+            <img src="wordale-favicon-new.png">
+        </div>
+        <div>&nbsp; </div>
+    </div>
+</head>
+
+<body>
+    <h3 id="demo"></h3>
+
+    <div id="notify">
+    </div>
+    <style>
+        #shareButton {
+            
+            font-family: 'Secular One';
+            font-size: clamp(0.9vw, 4vw, 20px);
+            top: 0px;
+            width:40%;
+            box-sizing: border-box;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            background: transparent;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: height .2s;
+            border-color: transparent;
+            border-radius: 1rem;
+            visibility: visible;
+            padding:0;
+        }
+        #shareButton:active{
+            background-color: midnightblue;
+        }
+        
+        #notify {
+            display: flex;
+            font-family: 'Secular One';
+            font-size: clamp(0.9vw, 4vw, 22px);
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            top: 0px;
+            width: 500px;
+            max-width: 95vw;
+            height: 0%;
+            box-sizing: border-box;
+            color: white;
+            text-align: center;
+            background: rgba(43, 43, 43, 0.6);
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: height .2s;
+            border-radius: 1rem;
+            visibility: visible;
+        }
+
+        #notify2 {
+            display: flex;
+            font-family: 'Secular One';
+            font-size: clamp(0.9vw, 4vw, 22px);
+            align-items: center;
+            justify-content: center;
+            margin:4 auto;
+
+            top: 0px;
+            width: 500px;
+            max-width: 95vw;
+            height: 0%;
+            box-sizing: border-box;
+            color: rgb(224, 224, 224);
+            text-align: center;
+            background: rgba(43, 43, 43, 0.6);
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: height .2s;
+            border-radius: 1rem;
+            visibility: visible;
+        }
+
+
+        #container {
+            display: flexbox;
+            font-family: 'Secular One';
+            font-size: clamp(1vw,10vw,2em)
+
+
+        }
+
+        .row {
+            display: flex;
+            /* flex-wrap: wrap; */
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .tile {
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: solid rgb(212, 212, 212);
+            border-radius: 5px;
+            vertical-align: top;
+        }
+
+        .tile[data-animation='pop'] {
+            animation-name: PopIn;
+            animation-duration: 100ms;
+        }
+
+        @keyframes PopIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            40% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .tile[data-animation='flip-in'] {
+            animation-name: FlipIn;
+            animation-duration: 800ms;
+            animation-timing-function: ease-in;
+        }
+
+        @keyframes FlipIn {
+            0% {
+                transform: rotateX(0);
+            }
+
+            50% {
+                transform: rotateX(-90deg);
+            }
+
+            100% {
+                transform: rotateX(0);
+            }
+        }
+        .tile.wakeup {
+            animation-name: WakeUp;
+            animation-duration: 400ms;
+            animation-timing-function: ease-in;
+        }
+
+        @keyframes WakeUp {
+            0% {
+                transform: translate(0px,0px)
+            }
+
+            10% {
+                transform: translate(10px,0px)
+
+            }
+            20% {
+                transform: translate(-10px,0px)
+
+            }
+            30% {
+                transform: translate(8px,0px)
+
+            }
+            40% {
+                transform: translate(-8px,0px)
+
+            }
+            50% {
+                transform: translate(6px,0px)
+
+            }
+            60% {
+                transform: translate(-6px,0px)
+
+            }
+            70% {
+                transform: translate(4px,0px)
+
+            }
+            80% {
+                transform: translate(-4px,0px)
+
+            }
+            90% {
+                transform: translate(2px,0px)
+
+            }
+            100%{
+                transform: translate(0,0px)
+
+            }
+        }
+
+        #instructions {
+            display: flexbox;
+            left:50%;
+            /* margin-left:-125px; */
+            width: clamp(20vw,70vw,400px);
+            transform: translate(-50%,0%);
+            background-color: rgb(243, 243, 243);
+            box-shadow:10px 10px 10px -5px rgb(68, 68, 68);
+             position: absolute;
+            /* z-index: 10;  */
+            text-align: right;
+            line-height:clamp(0.5vw,7vw,40px);
+            padding:20px;
+            font-family: 'Secular One';
+            font-size: clamp(0.5vw, 3vw, 17px);
+            flex-direction: column;
+            border-radius:clamp(0.5vw,2vw,10px);
+        }
+
+        .rulesTitle{
+            font-size:clamp(0.5vw, 9vw, 24px);
+            align-self: center;
+        }
+        .lineBar{
+            width: clamp(20vw,70vw,400px);
+            height:2px;
+            background-color: rgb(163, 163, 163);
+            
+        }
+        a{
+            color:rgb(0, 112, 112);
+        }
+    </style>
+    <div id="instructions" style="visibility:hidden;">
+        <label class="rulesTitle"><u>
+        ?איך משחקים
+       </u> </label>
+        <br>
+        .יש 6 נסיונות לנחש מילה
+        <br>
+        .כל ניחוש חייב להיות מילה אמיתית בת 5 אותיות
+        <br>
+         אחרי כל ניחוש, האותיות יצבעו בהתאם לכמה
+         <br> .שהיו קרובות למילה
+        <br>
+        <b>:דוגמאות</b>
+        <div class="lineBar"></div>
+        <img src="green.png" style="width:clamp(10vw,70vw,200px) ;margin-right:-8px;">
+        <br>
+        האות ה׳ קיימת במילה ופגעה במקום הנכון
+        <br>
+        <div class="lineBar"></div>
+        <img src="yellow.png" style="width:clamp(10vw,70vw,200px); margin-right:-8px;">
+        <br>
+        האות ק׳ קיימת במילה אך לא פגעה במקום הנכון
+        <div class="lineBar"></div>
+        <img src="grey.png" style="width:clamp(10vw,70vw,200px); margin-right:-8px;">
+        <br>אף אות לא קיימת במילה
+        <div class="lineBar"></div>
+
+        .בכל יום משתנה המילה
+        <br>
+        <div class="lineBar"></div>
+        .וורדל׳ה - וורדל בעברית
+        <br>
+        פותח על ידי יאיר הספרי
+        <br>
+        <a href="https://powerlanguage.co.uk/wordle/" target="_blank" rel="noopener noreferrer">wordle</a> מבוסס על 
+    </div>
+    <div id="container">
+        <div class="row" id="row1">
+            <div class="tile" id="tile11" data-animation="idle"></div>
+            <div class="tile" id="tile12" data-animation="idle"></div>
+            <div class="tile" id="tile13" data-animation="idle"></div>
+            <div class="tile" id="tile14" data-animation="idle"></div>
+            <div class="tile" id="tile15" data-animation="idle"></div>
+        </div>
+        <div class="row" id="row2">
+            <div class="tile" id="tile21" data-animation="idle"></div>
+            <div class="tile" id="tile22" data-animation="idle"></div>
+            <div class="tile" id="tile23" data-animation="idle"></div>
+            <div class="tile" id="tile24" data-animation="idle"></div>
+            <div class="tile" id="tile25" data-animation="idle"></div>
+        </div>
+        <div class="row" id="row3">
+            <div class="tile" id="tile31" data-animation="idle"></div>
+            <div class="tile" id="tile32" data-animation="idle"></div>
+            <div class="tile" id="tile33" data-animation="idle"></div>
+            <div class="tile" id="tile34" data-animation="idle"></div>
+            <div class="tile" id="tile35" data-animation="idle"></div>
+        </div>
+        <div class="row" id="row4">
+            <div class="tile" id="tile41" data-animation="idle"></div>
+            <div class="tile" id="tile42" data-animation="idle"></div>
+            <div class="tile" id="tile43" data-animation="idle"></div>
+            <div class="tile" id="tile44" data-animation="idle"></div>
+            <div class="tile" id="tile45" data-animation="idle"></div>
+        </div>
+        <div class="row" id="row5">
+            <div class="tile" id="tile51" data-animation="idle"></div>
+            <div class="tile" id="tile52" data-animation="idle"></div>
+            <div class="tile" id="tile53" data-animation="idle"></div>
+            <div class="tile" id="tile54" data-animation="idle"></div>
+            <div class="tile" id="tile55" data-animation="idle"></div>
+        </div>
+        <div class="row" id="row6">
+            <div class="tile" id="tile61" data-animation="idle"></div>
+            <div class="tile" id="tile62" data-animation="idle"></div>
+            <div class="tile" id="tile63" data-animation="idle"></div>
+            <div class="tile" id="tile64" data-animation="idle"></div>
+            <div class="tile" id="tile65" data-animation="idle"></div>
+        </div>
+    </div>
+    <style>
+        #keyboard {
+            display: flexbox;
+            padding-top: 10px;
+            border-radius: 10px;
+            width: 100vw;
+            text-align: center;
+            
+        }
+
+        #keyboard div {
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            margin-right:14px;
+            
+        }
+
+
+        #keyboard button {
+            touch-action: manipulation;
+            width: clamp(1vw,10vw,40px);
+            height: 50px;
+            font-family: 'Secular One';
+            text-align: center;
+            font-size: clamp(0.2vw,8vw,17px);
+            border: none;
+            border-radius: 5px;
+            margin: clamp(0.3vw,0.5vw,2px);
+            padding:0;
+
+        }
+
+        #keyboard .letter {
+            background-color: rgb(209, 209, 209);
+            color: black;
+        }
+
+        #keyboard .send {
+            color: rgb(255, 255, 255);
+            width: clamp(1.5vw,25vw,100px);
+            background-color: rgb(110, 110, 110);
+        }
+        #keyboard .clear{
+            color: rgb(235, 235, 235);
+            /* width: 70px; */
+            background-color: rgb(110, 110, 110);
+        }
+
+    </style>
+    <script>
+    </script>
+    <div id="keyboard">
+        <div>
+
+            <button class="letter" onclick="clickLetter(this.value)" value="ק" id="ק">ק</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ר" id="ר">ר</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="א" id="א">א</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ט" id="ט">ט</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ו" id="ו">ו</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="פ" id="פ">פ</button>
+            <button id="clear" class="clear" onclick="eraseLetter()"><img src="backspace-erase.svg" id="svgclear" style="width:clamp(0.8vw,5vw,15px);"></button>
+        </div>
+        <div>
+            <button class="letter" onclick="clickLetter(this.value)" value="ש" id="ש">ש</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ד" id="ד">ד</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ג" id="ג">ג</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="כ" id="כ">כ</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ע" id="ע">ע</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="י" id="י">י</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ח" id="ח">ח</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ל" id="ל">ל</button>
+        </div>
+        <div>
+            <button class="letter" onclick="clickLetter(this.value)" value="ז" id="ז">ז</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ס" id="ס">ס</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ב" id="ב">ב</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ה" id="ה">ה</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="נ" id="נ">נ</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="מ" id="מ">מ</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="צ" id="צ">צ</button>
+            <button class="letter" onclick="clickLetter(this.value)" value="ת" id="ת">ת</button>
+        </div>
+        <div><button class="send" id="send" value="שליחה" onclick="sendWord()">שליחה</button>
+        </div>
+        <div>
+        </div>
+    </div><!-- end #keyboard -->
+    <script src="hebwords.js"></script>
+    <script src="wordlist.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
