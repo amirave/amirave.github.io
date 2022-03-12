@@ -1,3 +1,3 @@
-Wordale is a word game in hebrew, based on the original english Wordle.
+Hebrew Wordle that let's you choose a custom word.
 
-Go to this address to start playing: https://yairhasfari.github.io/wordale/
+Fork of https://yairhasfari.github.io/wordale/
