@@ -167,7 +167,7 @@
                 var time = Date.now();
                 var deltaTime = 0;
                 
-                var idleTime = 0;
+                var idleTime = 100;
                 var prevMouseX = 0;
                 var prevMouseY = 0;
                 var mouseInWindow = true;
@@ -214,32 +214,25 @@
                 ********************/
 
                 var ctx = canvas.getContext('2d');
-                var X = canvas.width = window.innerWidth;
-                var Y = canvas.height = window.innerHeight;
+                var X, Y;
+
                 var mouseX = null;
                 var mouseY = null;
 
-                var dist = 80;
-                var lessThanMin = Math.sqrt(dist * dist + dist * dist) * 1.15;
-                var lessThanMax = lessThanMin * 1.05; 
-                var mouseDist = 100;
+                var dist;
+                var lessThanMin;
+                var lessThanMax;
+                var mouseDist;
                 var shapeNum;
-                var shapes = [];
-                var ease = 0.1;
-                var friction = 0.01;
-                var lineWidth = 5;
+                var shapes;
+                var ease;
+                var friction;
+                var lineWidth;
+                var circlingMultipler;
                 X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
 
                 var baseColor = '#272d30';
-                var maxIdleTime = 1.25;
-
-                // if (X < 768) {
-                //     lineWidth = 2;
-                //     dist = 40;
-                //     lessThan = Math.sqrt(dist * dist + dist * dist);
-                //     mouseDist = 50;
-                //     X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
-                // }
+                var maxIdleTime = 0.25;
 
                 /********************
                   Animation
@@ -290,19 +283,22 @@
 
                 Shape.prototype.mouseDist = function () {
 
-                    var x = mouseX - this.x;
-                    var y = mouseY - this.y;
-                    var d = x * x + y * y;
-                    var dist = Math.sqrt(d);
+                    var dist = Infinity;
 
-                    if (dist === null) dist = Infinity;
+                    if (mouseX !== null && mouseY !== null)
+                    {
+                        var x = mouseX - this.x;
+                        var y = mouseY - this.y;
+                        var d = x * x + y * y;
+                        var dist = Math.sqrt(d);
+                    }
 
                     if (idleTime < maxIdleTime && mouseInWindow && dist < mouseDist) {
                         this.v.x = +this.v.x;
                         this.v.y = +this.v.y;
                         var colAngle = Math.atan2(mouseY - this.y, mouseX - this.x);
 
-                        var multiplier = 10000 * 2 * clamp(mouseSpeed, 0.1, 1) * deltaTime;
+                        var multiplier = 10000 * clamp(mouseSpeed, 0.1, 2)**0.5 * deltaTime;
                         this.v.x += -Math.cos(colAngle) * multiplier;
                         this.v.y += -Math.sin(colAngle) * multiplier;
                         // this.x += this.v.x;
@@ -311,8 +307,8 @@
                     else
                     {
                         var offset = time / 1000 + (this.i + this.j) * 0.75;
-                        this.v.x += 1 * Math.cos(offset)
-                        this.v.y += 1 * Math.sin(offset)
+                        this.v.x += circlingMultipler * Math.cos(offset)
+                        this.v.y += circlingMultipler * Math.sin(offset)
                     }
                     // } else if (dist > mouseDist && dist < mouseDist + 10) {
                         // this.v.x = 0;
@@ -355,13 +351,7 @@
                     this.draw();
                 };
 
-                for (var i = 0; i < shapeNum + 1; i++) {
-                    for (var j = 0; j < shapeNum + 1; j++) {
-                        if (j * dist - dist > Y) break;
-                        var s = new Shape(ctx, i * dist, j * dist, i, j);
-                        shapes.push(s);
-                    }
-                }
+                onResize();
 
                 /********************
                   Render
@@ -401,26 +391,34 @@
                     X = canvas.width = window.innerWidth;
                     Y = canvas.height = window.innerHeight;
                     shapes = [];
-                    // if (X < 768) {
-                    //     lineWidth = 2;
-                    //     dist = 40;
-                    //     lessThan = Math.sqrt(dist * dist + dist * dist);
-                    //     mouseDist = 50;
-                    //     X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
-                    // } else {
-                    //     lineWidth = 5;
-                    //     dist = 80;
-                    //     lessThan = Math.sqrt(dist * dist + dist * dist);
-                    //     mouseDist = 150;
-                    //     X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
-                    // }
 
-                    // dist = X / xCount;
-                    // lessThanMin = Math.sqrt(dist * dist + dist * dist) * 1.15;
-                    // lessThanMax = lessThanMin * 1.05; 
-
+                    dist = 80;
+                    lessThanMin = Math.sqrt(dist * dist + dist * dist) * 1.15;
+                    lessThanMax = lessThanMin * 1.05; 
+                    mouseDist = 100;
+                    shapeNum;
+                    shapes = [];
+                    ease = 0.1;
+                    friction = 0.01;
+                    lineWidth = 5;
+                    circlingMultipler = 1;
                     X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
-                    
+
+                    if (X < 750)
+                    {
+                        dist = 40;
+                        lessThanMin = Math.sqrt(dist * dist + dist * dist) * 1.15;
+                        lessThanMax = lessThanMin * 1.05; 
+                        mouseDist = 50;
+                        shapeNum;
+                        shapes = [];
+                        ease = 0.1;
+                        friction = 0.01;
+                        lineWidth = 2.5;
+                        circlingMultipler = 0.5;
+                        X > Y ? shapeNum = X / dist : shapeNum = Y / dist;
+                    }
+
                     for (var i = 0; i < shapeNum + 1; i++) {
                         for (var j = 0; j < shapeNum + 1; j++) {
                             if (j * dist - dist > Y) break;
@@ -447,13 +445,18 @@
                     mouseInWindow = true;
                 }, false);
 
-                document.addEventListener('touchstart', (e) => console.log(e));
+                document.addEventListener('touchstart', (e) => {
+                    mouseInWindow = true;
+                });
+
+                document.addEventListener('touchend', (e) => {
+                    mouseInWindow = false;
+                })
 
                 document.addEventListener('touchmove', function (e) {
                     var touch = e.targetTouches[0];
                     mouseX = touch.pageX;
                     mouseY = touch.pageY;
-                    console.log(touch)
                 }, false);
             });
         })();
